@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Customer Segmentation Prediction</title>
+    <style>
+        /* Body styling */
+        body {
+            background-color: #87CEFA; /* Light sky blue background */
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        /* Form container */
+        .form-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            width: 50%;
+            max-width: 600px;
+        }
+
+        /* Form heading */
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        /* Labels */
+        label {
+            display: block;
+            margin-top: 10px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        /* Input fields */
+        input[type="text"] {
+            background-color: #FF69B4; /* Pink background */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            margin-top: 5px;
+            width: 100%;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        /* Submit button */
+        input[type="submit"] {
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            font-size: 18px;
+            width: 100%;
+            margin-top: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Submit button hover effect */
+        input[type="submit"]:hover {
+            background-color: #555;
+        }
+
+        /* Styling the form container on smaller screens */
+        @media screen and (max-width: 600px) {
+            .form-container {
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Customer Segmentation Prediction</h1>
+    <form id="prediction-form">
+        <label for="pct_tl_open_L6M">pct_tl_open_L6M:</label>
+        <input type="text" id="pct_tl_open_L6M" name="pct_tl_open_L6M"><br>
+
+        <label for="pct_tl_closed_L6M">pct_tl_closed_L6M:</label>
+        <input type="text" id="pct_tl_closed_L6M" name="pct_tl_closed_L6M"><br>
+
+        <label for="Tot_TL_closed_L12M">Tot_TL_closed_L12M:</label>
+        <input type="text" id="Tot_TL_closed_L12M" name="Tot_TL_closed_L12M"><br>
+
+        <label for="pct_tl_closed_L12M">pct_tl_closed_L12M:</label>
+        <input type="text" id="pct_tl_closed_L12M" name="pct_tl_closed_L12M"><br>
+
+        <label for="Tot_Missed_Pmnt">Tot_Missed_Pmnt:</label>
+        <input type="text" id="Tot_Missed_Pmnt" name="Tot_Missed_Pmnt"><br>
+
+        <label for="CC_TL">CC_TL:</label>
+        <input type="text" id="CC_TL" name="CC_TL"><br>
+
+        <label for="Home_TL">Home_TL:</label>
+        <input type="text" id="Home_TL" name="Home_TL"><br>
+
+        <label for="PL_TL">PL_TL:</label>
+        <input type="text" id="PL_TL" name="PL_TL"><br>
+
+        <label for="Secured_TL">Secured_TL:</label>
+        <input type="text" id="Secured_TL" name="Secured_TL"><br>
+
+        <label for="Unsecured_TL">Unsecured_TL:</label>
+        <input type="text" id="Unsecured_TL" name="Unsecured_TL"><br>
+
+        <label for="Other_TL">Other_TL:</label>
+        <input type="text" id="Other_TL" name="Other_TL"><br>
+
+        <label for="Age_Oldest_TL">Age_Oldest_TL:</label>
+        <input type="text" id="Age_Oldest_TL" name="Age_Oldest_TL"><br>
+
+        <label for="Age_Newest_TL">Age_Newest_TL:</label>
+        <input type="text" id="Age_Newest_TL" name="Age_Newest_TL"><br>
+
+        <label for="time_since_recent_payment">time_since_recent_payment:</label>
+        <input type="text" id="time_since_recent_payment" name="time_since_recent_payment"><br>
+
+        <label for="max_recent_level_of_deliq">max_recent_level_of_deliq:</label>
+        <input type="text" id="max_recent_level_of_deliq" name="max_recent_level_of_deliq"><br>
+
+        <label for="num_deliq_6_12mts">num_deliq_6_12mts:</label>
+        <input type="text" id="num_deliq_6_12mts" name="num_deliq_6_12mts"><br>
+
+        <label for="num_times_60p_dpd">num_times_60p_dpd:</label>
+        <input type="text" id="num_times_60p_dpd" name="num_times_60p_dpd"><br>
+
+        <label for="num_std_12mts">num_std_12mts:</label>
+        <input type="text" id="num_std_12mts" name="num_std_12mts"><br>
+
+        <label for="num_sub">num_sub:</label>
+        <input type="text" id="num_sub" name="num_sub"><br>
+
+        <label for="num_sub_6mts">num_sub_6mts:</label>
+        <input type="text" id="num_sub_6mts" name="num_sub_6mts"><br>
+
+        <label for="num_sub_12mts">num_sub_12mts:</label>
+        <input type="text" id="num_sub_12mts" name="num_sub_12mts"><br>
+
+        <label for="num_dbt">num_dbt:</label>
+        <input type="text" id="num_dbt" name="num_dbt"><br>
+
+        <label for="num_dbt_12mts">num_dbt_12mts:</label>
+        <input type="text" id="num_dbt_12mts" name="num_dbt_12mts"><br>
+
+        <label for="num_lss">num_lss:</label>
+        <input type="text" id="num_lss" name="num_lss"><br>
+
+        <label for="recent_level_of_deliq">recent_level_of_deliq:</label>
+        <input type="text" id="recent_level_of_deliq" name="recent_level_of_deliq"><br>
+
+        <label for="CC_enq_L12m">CC_enq_L12m:</label>
+        <input type="text" id="CC_enq_L12m" name="CC_enq_L12m"><br>
+
+        <label for="PL_enq_L12m">PL_enq_L12m:</label>
+        <input type="text" id="PL_enq_L12m" name="PL_enq_L12m"><br>
+
+        <label for="time_since_recent_enq">time_since_recent_enq:</label>
+        <input type="text" id="time_since_recent_enq" name="time_since_recent_enq"><br>
+
+        <label for="enq_L3m">enq_L3m:</label>
+        <input type="text" id="enq_L3m" name="enq_L3m"><br>
+
+        <label for="NETMONTHLYINCOME">NETMONTHLYINCOME:</label>
+        <input type="text" id="NETMONTHLYINCOME" name="NETMONTHLYINCOME"><br>
+
+        <label for="Time_With_Curr_Empr">Time_With_Curr_Empr:</label>
+        <input type="text" id="Time_With_Curr_Empr" name="Time_With_Curr_Empr"><br>
+
+        <label for="CC_Flag">CC_Flag:</label>
+        <input type="text" id="CC_Flag" name="CC_Flag"><br>
+
+        <label for="PL_Flag">PL_Flag:</label>
+        <input type="text" id="PL_Flag" name="PL_Flag"><br>
+
+        <label for="pct_PL_enq_L6m_of_ever">pct_PL_enq_L6m_of_ever:</label>
+        <input type="text" id="pct_PL_enq_L6m_of_ever" name="pct_PL_enq_L6m_of_ever"><br>
+
+        <label for="pct_CC_enq_L6m_of_ever">pct_CC_enq_L6m_of_ever:</label>
+        <input type="text" id="pct_CC_enq_L6m_of_ever" name="pct_CC_enq_L6m_of_ever"><br>
+
+        <label for="HL_Flag">HL_Flag:</label>
+        <input type="text" id="HL_Flag" name="HL_Flag"><br>
+
+        <label for="GL_Flag">GL_Flag:</label>
+        <input type="text" id="GL_Flag" name="GL_Flag"><br>
+
+        <label for="EDUCATION">EDUCATION:</label>
+        <input type="text" id="EDUCATION" name="EDUCATION"><br>
+
+        <label for="MARITALSTATUS_Married">MARITALSTATUS_Married:</label>
+        <input type="text" id="MARITALSTATUS_Married" name="MARITALSTATUS_Married"><br>
+
+        <label for="MARITALSTATUS_Single">MARITALSTATUS_Single:</label>
+        <input type="text" id="MARITALSTATUS_Single" name="MARITALSTATUS_Single"><br>
+
+        <label for="GENDER_F">GENDER_F:</label>
+        <input type="text" id="GENDER_F" name="GENDER_F"><br>
+
+        <label for="GENDER_M">GENDER_M:</label>
+        <input type="text" id="GENDER_M" name="GENDER_M"><br>
+
+        <label for="last_prod_enq2_AL">last_prod_enq2_AL:</label>
+        <input type="text" id="last_prod_enq2_AL" name="last_prod_enq2_AL"><br>
+
+        <label for="last_prod_enq2_CC">last_prod_enq2_CC:</label>
+        <input type="text" id="last_prod_enq2_CC" name="last_prod_enq2_CC"><br>
+
+        <label for="last_prod_enq2_ConsumerLoan">last_prod_enq2_ConsumerLoan:</label>
+        <input type="text" id="last_prod_enq2_ConsumerLoan" name="last_prod_enq2_ConsumerLoan"><br>
+
+        <label for="last_prod_enq2_HL">last_prod_enq2_HL:</label>
+        <input type="text" id="last_prod_enq2_HL" name="last_prod_enq2_HL"><br>
+
+        <label for="last_prod_enq2_PL">last_prod_enq2_PL:</label>
+        <input type="text" id="last_prod_enq2_PL" name="last_prod_enq2_PL"><br>
+
+        <label for="last_prod_enq2_others">last_prod_enq2_others:</label>
+        <input type="text" id="last_prod_enq2_others" name="last_prod_enq2_others"><br>
+
+        <label for="first_prod_enq2_AL">first_prod_enq2_AL:</label>
+        <input type="text" id="first_prod_enq2_AL" name="first_prod_enq2_AL"><br>
+
+        <label for="first_prod_enq2_CC">first_prod_enq2_CC:</label>
+        <input type="text" id="first_prod_enq2_CC" name="first_prod_enq2_CC"><br>
+
+        <label for="first_prod_enq2_ConsumerLoan">first_prod_enq2_ConsumerLoan:</label>
+        <input type="text" id="first_prod_enq2_ConsumerLoan" name="first_prod_enq2_ConsumerLoan"><br>
+
+        <label for="first_prod_enq2_HL">first_prod_enq2_HL:</label>
+        <input type="text" id="first_prod_enq2_HL" name="first_prod_enq2_HL"><br>
+
+        <label for="first_prod_enq2_PL">first_prod_enq2_PL:</label>
+        <input type="text" id="first_prod_enq2_PL" name="first_prod_enq2_PL"><br>
+
+        <label for="first_prod_enq2_others">first_prod_enq2_others:</label>
+        <input type="text" id="first_prod_enq2_others" name="first_prod_enq2_others"><br>
+
+        <input type="submit" value="Submit">
+    </form>
+
+    <script>
+        document.getElementById('prediction-form').addEventListener('submit', function (event) {
+            event.preventDefault();
+            var formData = new FormData(this);
+            var data = {};
+            formData.forEach((value, key) => { data[key] = value });
+            
+            fetch('/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('Prediction: ' + data.prediction);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>
