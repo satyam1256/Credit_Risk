@@ -1,83 +1,117 @@
 from flask import Flask, render_template, request
 import pickle
+import pandas as pd
+import numpy as np
 
 app = Flask(__name__)
 
 # Load the model
-model = pickle.load(open('bestmodel.pkl', 'rb'))
+try:
+    model = pickle.load(open('./Notebooks/bestmodel.pkl', 'rb'))
+except Exception as e:
+    print(f"Error loading model: {e}")
+    model = None
 
-# Home page
+# Define feature fields
+fields = [
+    'enq_L3m', 'Age_Oldest_TL', 'num_std_12mts', 'pct_PL_enq_L6m_of_ever',
+    'time_since_recent_enq', 'max_recent_level_of_deliq', 'recent_level_of_deliq',
+    'PL_enq_L12m', 'Secured_TL', 'last_prod_enq2_ConsumerLoan', 'GL_Flag',
+    'num_times_60p_dpd', 'num_deliq_6_12mts', 'Age_Newest_TL', 'PL_Flag'
+]
+
 @app.route('/')
 def home():
-    return render_template('index.html')
+    # Pass empty values initially
+    return render_template('index.html', fields=fields, values={}, error=None, result=None)
 
-@app.route('/predict', methods=['POST', 'GET'])
+@app.route('/predict', methods=['POST'])
 def predict():
-    if request.method == 'POST':
-        # Collecting all the input values from the form
-        v1 = request.form.get('pct_tl_open_L6M', type=float)
-        v2 = request.form.get('pct_tl_closed_L6M', type=float)
-        v3 = request.form.get('Tot_TL_closed_L12M', type=float)
-        v4 = request.form.get('pct_tl_closed_L12M', type=float)
-        v5 = request.form.get('Tot_Missed_Pmnt', type=float)
-        v6 = request.form.get('CC_TL', type=float)
-        v7 = request.form.get('Home_TL', type=float)
-        v8 = request.form.get('PL_TL', type=float)
-        v9 = request.form.get('Secured_TL', type=float)
-        v10 = request.form.get('Unsecured_TL', type=float)
-        v11 = request.form.get('Other_TL', type=float)
-        v12 = request.form.get('Age_Oldest_TL', type=float)
-        v13 = request.form.get('Age_Newest_TL', type=float)
-        v14 = request.form.get('time_since_recent_payment', type=float)
-        v15 = request.form.get('max_recent_level_of_deliq', type=float)
-        v16 = request.form.get('num_deliq_6_12mts', type=float)
-        v17 = request.form.get('num_times_60p_dpd', type=float)
-        v18 = request.form.get('num_std_12mts', type=float)
-        v19 = request.form.get('num_sub', type=float)
-        v20 = request.form.get('num_sub_6mts', type=float)
-        v21 = request.form.get('num_sub_12mts', type=float)
-        v22 = request.form.get('num_dbt', type=float)
-        v23 = request.form.get('num_dbt_12mts', type=float)
-        v24 = request.form.get('num_lss', type=float)
-        v25 = request.form.get('recent_level_of_deliq', type=float)
-        v26 = request.form.get('CC_enq_L12m', type=float)
-        v27 = request.form.get('PL_enq_L12m', type=float)
-        v28 = request.form.get('time_since_recent_enq', type=float)
-        v29 = request.form.get('enq_L3m', type=float)
-        v30 = request.form.get('NETMONTHLYINCOME', type=float)
-        v31 = request.form.get('Time_With_Curr_Empr', type=float)
-        v32 = request.form.get('CC_Flag', type=int)
-        v33 = request.form.get('PL_Flag', type=int)
-        v34 = request.form.get('pct_PL_enq_L6m_of_ever', type=float)
-        v35 = request.form.get('pct_CC_enq_L6m_of_ever', type=float)
-        v36 = request.form.get('HL_Flag', type=int)
-        v37 = request.form.get('GL_Flag', type=int)
-        v38 = request.form.get('EDUCATION', type=int)
-        v39 = request.form.get('MARITALSTATUS_Married', type=int)
-        v40 = request.form.get('MARITALSTATUS_Single', type=int)
-        v41 = request.form.get('GENDER_F', type=int)
-        v42 = request.form.get('GENDER_M', type=int)
-        v43 = request.form.get('last_prod_enq2_AL', type=int)
-        v44 = request.form.get('last_prod_enq2_CC', type=int)
-        v45 = request.form.get('last_prod_enq2_ConsumerLoan', type=int)
-        v46 = request.form.get('last_prod_enq2_HL', type=int)
-        v47 = request.form.get('last_prod_enq2_PL', type=int)
-        v48 = request.form.get('last_prod_enq2_others', type=int)
-        v49 = request.form.get('first_prod_enq2_AL', type=int)
-        v50 = request.form.get('first_prod_enq2_CC', type=int)
-        v51 = request.form.get('first_prod_enq2_ConsumerLoan', type=int)
-        v52 = request.form.get('first_prod_enq2_HL', type=int)
-        v53 = request.form.get('first_prod_enq2_PL', type=int)
-        v54 = request.form.get('first_prod_enq2_others', type=int)
+    try:
+        # Collect input features
+        values = {}
+        for field in fields:
+            if field == 'last_prod_enq2_ConsumerLoan':  # Handle boolean separately
+                values[field] = request.form.get(field) == 'true'
+            else:
+                values[field] = float(request.form.get(field))  # Convert input to float for the model
+
+        # Prepare input for the model
+        input_features = [values[field] for field in fields]
+        print(f"Input features: {input_features}")  # Debugging input values
+
+        # Check if model is loaded
+        if model is None:
+            raise ValueError("Model not loaded.")
 
         # Make prediction
-        result = model.predict([[v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22, v23, v24, v25, v26, v27, v28, v29, v30, v31, v32, v33, v34, v35, v36, v37, v38, v39, v40, v41, v42, v43, v44, v45, v46, v47, v48, v49, v50, v51, v52, v53, v54]])[0]
+        prediction = model.predict([input_features])
+        prediction_map = {0: 'P1', 1: 'P2', 2: 'P3', 3: 'P4'}
+        result = prediction_map.get(prediction[0], "Unknown Prediction")
 
-        # Pass input values and result back to the template
-        return render_template('index.html', result=result, **locals())
-    else:
-        # If GET request, redirect to home page
-        return redirect('/')
+        # Render results
+        return render_template('index.html', fields=fields, values=values, result=result, error=None)
+
+    except Exception as e:
+        # Render error
+        return render_template('index.html', fields=fields, values=request.form, error=f"Error: {str(e)}", result=None)
 
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0")
+
+
+
+
+
+# from flask import Flask, render_template, request
+# import pickle
+# import numpy as np
+
+# app = Flask(__name__)
+
+# # Load the model
+# model = pickle.load(open('bestmodel.pkl', 'rb'))
+
+# @app.route('/')
+# def home():
+#     return render_template('index.html')
+
+# @app.route('/predict', methods=['POST'])
+# def predict():
+#     try:
+#         # Collect all input fields from the form
+#         enq_L3m = int(request.form['enq_L3m'])
+#         Age_Oldest_TL = int(request.form['Age_Oldest_TL'])
+#         num_std_12mts = int(request.form['num_std_12mts'])
+#         pct_PL_enq_L6m_of_ever = float(request.form['pct_PL_enq_L6m_of_ever'])
+#         time_since_recent_enq = int(request.form['time_since_recent_enq'])
+#         max_recent_level_of_deliq = int(request.form['max_recent_level_of_deliq'])
+#         recent_level_of_deliq = int(request.form['recent_level_of_deliq'])
+#         PL_enq_L12m = int(request.form['PL_enq_L12m'])
+#         Secured_TL = int(request.form['Secured_TL'])
+#         last_prod_enq2_ConsumerLoan = bool(int(request.form['last_prod_enq2_ConsumerLoan']))
+#         GL_Flag = int(request.form['GL_Flag'])
+#         num_times_60p_dpd = int(request.form['num_times_60p_dpd'])
+#         num_deliq_6_12mts = int(request.form['num_deliq_6_12mts'])
+#         Age_Newest_TL = int(request.form['Age_Newest_TL'])
+#         PL_Flag = int(request.form['PL_Flag'])
+
+#         # Prepare input array
+#         features = np.array([[
+#             enq_L3m, Age_Oldest_TL, num_std_12mts, pct_PL_enq_L6m_of_ever,
+#             time_since_recent_enq, max_recent_level_of_deliq, recent_level_of_deliq,
+#             PL_enq_L12m, Secured_TL, last_prod_enq2_ConsumerLoan, GL_Flag,
+#             num_times_60p_dpd, num_deliq_6_12mts, Age_Newest_TL, PL_Flag
+#         ]])
+
+#         # Make prediction
+#         prediction = model.predict(features)[0]
+#         result = {0: 'P1', 1: 'P2', 2: 'P3', 3: 'P4'}.get(prediction, 'Unknown')
+
+#         return render_template('index.html', result=result)
+
+#     except Exception as e:
+#         return render_template('index.html', error=f"An error occurred: {str(e)}")
+
+# if __name__ == '__main__':
+#     app.run(debug=True)

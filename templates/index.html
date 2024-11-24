@@ -5,255 +5,155 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Customer Propensity Prediction using ML</title>
   <!-- Bootstrap CSS -->
-  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.6.2/css/bootstrap.min.css" rel="stylesheet">
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body {
       font-family: 'Roboto', sans-serif;
-      background-color: #f8f9fa;
+      background-color: #87CEEB; /* Light blue background */
+      color: white;
     }
     .container {
       margin-top: 50px;
-      background-color: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+      background-color: #004a8f; /* A darker blue for contrast */
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.3);
     }
     .form-group {
-      margin-bottom: 15px;
+      margin-bottom: 20px; /* Added spacing between input fields */
+    }
+    .form-group label {
+      font-weight: bold;
+    }
+    .form-control {
+      background-color: #FFB6C1; /* Pink input boxes */
+      border: none;
+      color: #004a8f; /* Blue text inside input boxes for contrast */
+      font-weight: bold;
+    }
+    .form-control:focus {
+      background-color: #FFC0CB; /* Lighter pink on focus */
+      box-shadow: 0 0 8px rgba(255, 182, 193, 0.7);
+    }
+    .btn-primary {
+      background-color: #FF1493; /* Hot pink for the button */
+      border: none;
+      font-size: 1.2rem;
+      font-weight: bold;
+      padding: 10px 20px;
+      border-radius: 30px;
+      transition: all 0.3s ease-in-out;
+    }
+    .btn-primary:hover {
+      background-color: #FF69B4; /* Lighter pink on hover */
+      transform: translateY(-2px);
+      box-shadow: 0px 4px 10px rgba(255, 105, 180, 0.7);
+    }
+    .alert {
+      font-weight: bold;
+      font-size: 1.1rem;
+      text-align: center;
+    }
+    .alert-success {
+      background-color: #32CD32; /* Lime green for success messages */
+      color: white;
+    }
+    .alert-danger {
+      background-color: #DC143C; /* Crimson for error messages */
+      color: white;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 2.5rem;
     }
   </style>
 </head>
 <body>
   <div class="container">
     <h1 class="text-center">Customer Propensity Prediction</h1>
-    
+
+    <!-- Display Errors -->
+    {% if error %}
+      <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+
+    <!-- Display Results -->
+    {% if result %}
+      <div class="alert alert-success">Prediction Result: {{ result }}</div>
+    {% endif %}
+
     <form action="/predict" method="POST">
       <div class="row">
         <div class="col-md-6 form-group">
-          <label for="pct_tl_open_L6M">Pct TL Open L6M:</label>
-          <input type="text" class="form-control" id="pct_tl_open_L6M" name="pct_tl_open_L6M" required value="{{ pct_tl_open_L6M }}">
-        </div>
-        <div class="col-md-6 form-group">
-          <label for="pct_tl_closed_L6M">Pct TL Closed L6M:</label>
-          <input type="text" class="form-control" id="pct_tl_closed_L6M" name="pct_tl_closed_L6M" required value="{{ pct_tl_closed_L6M }}">
-        </div>
-        <div class="col-md-6 form-group">
-          <label for="Tot_TL_closed_L12M">Tot TL Closed L12M:</label>
-          <input type="text" class="form-control" id="Tot_TL_closed_L12M" name="Tot_TL_closed_L12M" required value="{{ Tot_TL_closed_L12M }}">
-        </div>
-        <div class="col-md-6 form-group">
-          <label for="pct_tl_closed_L12M">Pct TL Closed L12M:</label>
-          <input type="text" class="form-control" id="pct_tl_closed_L12M" name="pct_tl_closed_L12M" required value="{{ pct_tl_closed_L12M }}">
-        </div>
-        <div class="col-md-6 form-group">
-          <label for="Tot_Missed_Pmnt">Tot Missed Pmnt:</label>
-          <input type="text" class="form-control" id="Tot_Missed_Pmnt" name="Tot_Missed_Pmnt" required value="{{ Tot_Missed_Pmnt }}">
-        </div>
-        <div class="col-md-6 form-group">
-          <label for="CC_TL">CC TL:</label>
-          <input type="text" class="form-control" id="CC_TL" name="CC_TL" required value="{{ CC_TL }}">
-        </div>
-        <div class="col-md-6 form-group">
-          <label for="Home_TL">Home TL:</label>
-          <input type="text" class="form-control" id="Home_TL" name="Home_TL" required value="{{ Home_TL }}">
-        </div>
-        <div class="col-md-6 form-group">
-          <label for="PL_TL">PL TL:</label>
-          <input type="text" class="form-control" id="PL_TL" name="PL_TL" required value="{{ PL_TL }}">
-        </div>
-        <div class="col-md-6 form-group">
-          <label for="Secured_TL">Secured TL:</label>
-          <input type="text" class="form-control" id="Secured_TL" name="Secured_TL" required value="{{ Secured_TL }}">
-        </div>
-        <div class="col-md-6 form-group">
-          <label for="Unsecured_TL">Unsecured TL:</label>
-          <input type="text" class="form-control" id="Unsecured_TL" name="Unsecured_TL" required value="{{ Unsecured_TL }}">
-        </div>
-        <div class="col-md-6 form-group">
-          <label for="Other_TL">Other TL:</label>
-          <input type="text" class="form-control" id="Other_TL" name="Other_TL" required value="{{ Other_TL }}">
-        </div>
-        <div class="col-md-6 form-group">
-          <label for="Age_Oldest_TL">Age Oldest TL:</label>
-          <input type="text" class="form-control" id="Age_Oldest_TL" name="Age_Oldest_TL" required value="{{ Age_Oldest_TL }}">
-        </div>
-        <div class="col-md-6 form-group">
-          <label for="Age_Newest_TL">Age Newest TL:</label>
-          <input type="text" class="form-control" id="Age_Newest_TL" name="Age_Newest_TL" required value="{{ Age_Newest_TL }}">
-        </div>
-        <div class="col-md-6 form-group">
-          <label for="time_since_recent_payment">Time Since Recent Payment:</label>
-          <input type="text" class="form-control" id="time_since_recent_payment" name="time_since_recent_payment" required value="{{ time_since_recent_payment }}">
-        </div>
-        <div class="col-md-6 form-group">
-          <label for="max_recent_level_of_deliq">Max Recent Level of Deliq:</label>
-          <input type="text" class="form-control" id="max_recent_level_of_deliq" name="max_recent_level_of_deliq" required value="{{ max_recent_level_of_deliq }}">
-        </div>
-        <div class="col-md-6 form-group">
-          <label for="num_deliq_6_12mts">Num Deliq 6-12 Mts:</label>
-          <input type="text" class="form-control" id="num_deliq_6_12mts" name="num_deliq_6_12mts" required value="{{ num_deliq_6_12mts }}">
-        </div>
-        <div class="col-md-6 form-group">
-          <label for="num_times_60p_dpd">Num Times 60+ DPD:</label>
-          <input type="text" class="form-control" id="num_times_60p_dpd" name="num_times_60p_dpd" required value="{{ num_times_60p_dpd }}">
-        </div>
-        <div class="col-md-6 form-group">
-          <label for="num_std_12mts">Num Std 12 Mts:</label>
-          <input type="text" class="form-control" id="num_std_12mts" name="num_std_12mts" required value="{{ num_std_12mts }}">
-        </div>
-        <div class="col-md-6 form-group">
-          <label for="num_sub">Num Sub:</label>
-          <input type="text" class="form-control" id="num_sub" name="num_sub" required value="{{ num_sub }}">
-        </div>
-        <div class="col-md-6 form-group">
-          <label for="num_sub_6mts">Num Sub 6 Mts:</label>
-          <input type="text" class="form-control" id="num_sub_6mts" name="num_sub_6mts" required value="{{ num_sub_6mts }}">
-        </div>
-        <div class="col-md-6 form-group">
-          <label for="num_sub_12mts">Num Sub 12 Mts:</label>
-          <input type="text" class="form-control" id="num_sub_12mts" name="num_sub_12mts" required value="{{ num_sub_12mts }}">
-        </div>
-        <div class="col-md-6 form-group">
-          <label for="num_dbt">Num DBT:</label>
-          <input type="text" class="form-control" id="num_dbt" name="num_dbt" required value="{{ num_dbt }}">
-        </div>
-        <div class="col-md-6 form-group">
-          <label for="num_dbt_12mts">Num DBT 12 Mts:</label>
-          <input type="text" class="form-control" id="num_dbt_12mts" name="num_dbt_12mts" required value="{{ num_dbt_12mts }}">
-        </div>
-        <div class="col-md-6 form-group">
-          <label for="num_lss">Num LSS:</label>
-          <input type="text" class="form-control" id="num_lss" name="num_lss" required value="{{ num_lss }}">
-        </div>
-        <div class="col-md-6 form-group">
-          <label for="recent_level_of_deliq">Recent Level of Deliq:</label>
-          <input type="text" class="form-control" id="recent_level_of_deliq" name="recent_level_of_deliq" required value="{{ recent_level_of_deliq }}">
-        </div>
-        <div class="col-md-6 form-group">
-          <label for="CC_enq_L12m">CC Enq L12M:</label>
-          <input type="text" class="form-control" id="CC_enq_L12m" name="CC_enq_L12m" required value="{{ CC_enq_L12m }}">
-        </div>
-        <div class="col-md-6 form-group">
-          <label for="PL_enq_L12m">PL Enq L12M:</label>
-          <input type="text" class="form-control" id="PL_enq_L12m" name="PL_enq_L12m" required value="{{ PL_enq_L12m }}">
-        </div>
-        <div class="col-md-6 form-group">
-          <label for="time_since_recent_enq">Time Since Recent Enq:</label>
-          <input type="text" class="form-control" id="time_since_recent_enq" name="time_since_recent_enq" required value="{{ time_since_recent_enq }}">
-        </div>
-        <div class="col-md-6 form-group">
-          <label for="enq_L3m">Enq L3M:</label>
+          <label for="enq_L3m">Number of Inquiries in Last 3 Months:</label>
           <input type="text" class="form-control" id="enq_L3m" name="enq_L3m" required value="{{ enq_L3m }}">
         </div>
         <div class="col-md-6 form-group">
-          <label for="NETMONTHLYINCOME">Net Monthly Income:</label>
-          <input type="text" class="form-control" id="NETMONTHLYINCOME" name="NETMONTHLYINCOME" required value="{{ NETMONTHLYINCOME }}">
+          <label for="Age_Oldest_TL">Age of Oldest Opened Account (in years):</label>
+          <input type="text" class="form-control" id="Age_Oldest_TL" name="Age_Oldest_TL" required value="{{ Age_Oldest_TL }}">
         </div>
         <div class="col-md-6 form-group">
-          <label for="Time_With_Curr_Empr">Time with Curr Empr:</label>
-          <input type="text" class="form-control" id="Time_With_Curr_Empr" name="Time_With_Curr_Empr" required value="{{ Time_With_Curr_Empr }}">
+          <label for="num_std_12mts">Number of Standard Payments in the Last 12 Months:</label>
+          <input type="text" class="form-control" id="num_std_12mts" name="num_std_12mts" required value="{{ num_std_12mts }}">
         </div>
         <div class="col-md-6 form-group">
-          <label for="CC_Flag">CC Flag:</label>
-          <input type="text" class="form-control" id="CC_Flag" name="CC_Flag" required value="{{ CC_Flag }}">
-        </div>
-        <div class="col-md-6 form-group">
-          <label for="PL_Flag">PL Flag:</label>
-          <input type="text" class="form-control" id="PL_Flag" name="PL_Flag" required value="{{ PL_Flag }}">
-        </div>
-        <div class="col-md-6 form-group">
-          <label for="pct_PL_enq_L6m_of_ever">Pct PL Enq L6M of Ever:</label>
+          <label for="pct_PL_enq_L6m_of_ever">Percentage of Personal Loan Inquiries in Last 6 Months Out of All Inquiries:</label>
           <input type="text" class="form-control" id="pct_PL_enq_L6m_of_ever" name="pct_PL_enq_L6m_of_ever" required value="{{ pct_PL_enq_L6m_of_ever }}">
         </div>
         <div class="col-md-6 form-group">
-          <label for="pct_CC_enq_L6m_of_ever">Pct CC Enq L6M of Ever:</label>
-          <input type="text" class="form-control" id="pct_CC_enq_L6m_of_ever" name="pct_CC_enq_L6m_of_ever" required value="{{ pct_CC_enq_L6m_of_ever }}">
+          <label for="time_since_recent_enq">Time Since the Most Recent Inquiry (in months):</label>
+          <input type="text" class="form-control" id="time_since_recent_enq" name="time_since_recent_enq" required value="{{ time_since_recent_enq }}">
         </div>
         <div class="col-md-6 form-group">
-          <label for="HL_Flag">HL Flag:</label>
-          <input type="text" class="form-control" id="HL_Flag" name="HL_Flag" required value="{{ HL_Flag }}">
+          <label for="max_recent_level_of_deliq">Highest Recent Delinquency Level:</label>
+          <input type="text" class="form-control" id="max_recent_level_of_deliq" name="max_recent_level_of_deliq" required value="{{ max_recent_level_of_deliq }}">
         </div>
         <div class="col-md-6 form-group">
-          <label for="GL_Flag">GL Flag:</label>
-          <input type="text" class="form-control" id="GL_Flag" name="GL_Flag" required value="{{ GL_Flag }}">
+          <label for="recent_level_of_deliq">Most Recent Delinquency Level:</label>
+          <input type="text" class="form-control" id="recent_level_of_deliq" name="recent_level_of_deliq" required value="{{ recent_level_of_deliq }}">
         </div>
         <div class="col-md-6 form-group">
-          <label for="EDUCATION">Education:</label>
-          <input type="text" class="form-control" id="EDUCATION" name="EDUCATION" required value="{{ EDUCATION }}">
+          <label for="PL_enq_L12m">Number of Personal Loan Inquiries in the Last 12 Months:</label>
+          <input type="text" class="form-control" id="PL_enq_L12m" name="PL_enq_L12m" required value="{{ PL_enq_L12m }}">
         </div>
         <div class="col-md-6 form-group">
-          <label for="MARITALSTATUS_Married">Marital Status Married:</label>
-          <input type="text" class="form-control" id="MARITALSTATUS_Married" name="MARITALSTATUS_Married" required value="{{ MARITALSTATUS_Married }}">
+          <label for="Secured_TL">Number of Secured Loan Accounts:</label>
+          <input type="text" class="form-control" id="Secured_TL" name="Secured_TL" required value="{{ Secured_TL }}">
         </div>
         <div class="col-md-6 form-group">
-          <label for="MARITALSTATUS_Single">Marital Status Single:</label>
-          <input type="text" class="form-control" id="MARITALSTATUS_Single" name="MARITALSTATUS_Single" required value="{{ MARITALSTATUS_Single }}">
-        </div>
-        <div class="col-md-6 form-group">
-          <label for="GENDER_F">Gender F:</label>
-          <input type="text" class="form-control" id="GENDER_F" name="GENDER_F" required value="{{ GENDER_F }}">
-        </div>
-        <div class="col-md-6 form-group">
-          <label for="GENDER_M">Gender M:</label>
-          <input type="text" class="form-control" id="GENDER_M" name="GENDER_M" required value="{{ GENDER_M }}">
-        </div>
-        <div class="col-md-6 form-group">
-          <label for="last_prod_enq2_AL">Last Prod Enq2 AL:</label>
-          <input type="text" class="form-control" id="last_prod_enq2_AL" name="last_prod_enq2_AL" required value="{{ last_prod_enq2_AL }}">
-        </div>
-        <div class="col-md-6 form-group">
-          <label for="last_prod_enq2_CC">Last Prod Enq2 CC:</label>
-          <input type="text" class="form-control" id="last_prod_enq2_CC" name="last_prod_enq2_CC" required value="{{ last_prod_enq2_CC }}">
-        </div>
-        <div class="col-md-6 form-group">
-          <label for="last_prod_enq2_ConsumerLoan">Last Prod Enq2 Consumer Loan:</label>
+          <label for="last_prod_enq2_ConsumerLoan">Most Recent Inquiry for Consumer Loan:</label>
           <input type="text" class="form-control" id="last_prod_enq2_ConsumerLoan" name="last_prod_enq2_ConsumerLoan" required value="{{ last_prod_enq2_ConsumerLoan }}">
         </div>
         <div class="col-md-6 form-group">
-          <label for="last_prod_enq2_HL">Last Prod Enq2 HL:</label>
-          <input type="text" class="form-control" id="last_prod_enq2_HL" name="last_prod_enq2_HL" required value="{{ last_prod_enq2_HL }}">
+          <label for="GL_Flag">Flag for Goods and Services Loan:</label>
+          <input type="text" class="form-control" id="GL_Flag" name="GL_Flag" required value="{{ GL_Flag }}">
         </div>
         <div class="col-md-6 form-group">
-          <label for="last_prod_enq2_PL">Last Prod Enq2 PL:</label>
-          <input type="text" class="form-control" id="last_prod_enq2_PL" name="last_prod_enq2_PL" required value="{{ last_prod_enq2_PL }}">
+          <label for="num_times_60p_dpd">Number of Times 60+ Days Past Due:</label>
+          <input type="text" class="form-control" id="num_times_60p_dpd" name="num_times_60p_dpd" required value="{{ num_times_60p_dpd }}">
         </div>
         <div class="col-md-6 form-group">
-          <label for="last_prod_enq2_others">Last Prod Enq2 Others:</label>
-          <input type="text" class="form-control" id="last_prod_enq2_others" name="last_prod_enq2_others" required value="{{ last_prod_enq2_others }}">
+          <label for="num_deliq_6_12mts">Number of Delinquencies in the Last 6 to 12 Months:</label>
+          <input type="text" class="form-control" id="num_deliq_6_12mts" name="num_deliq_6_12mts" required value="{{ num_deliq_6_12mts }}">
         </div>
         <div class="col-md-6 form-group">
-          <label for="first_prod_enq2_AL">First Prod Enq2 AL:</label>
-          <input type="text" class="form-control" id="first_prod_enq2_AL" name="first_prod_enq2_AL" required value="{{ first_prod_enq2_AL }}">
+          <label for="Age_Newest_TL">Age of Most Recently Opened Account (in years):</label>
+          <input type="text" class="form-control" id="Age_Newest_TL" name="Age_Newest_TL" required value="{{ Age_Newest_TL }}">
         </div>
         <div class="col-md-6 form-group">
-          <label for="first_prod_enq2_CC">First Prod Enq2 CC:</label>
-          <input type="text" class="form-control" id="first_prod_enq2_CC" name="first_prod_enq2_CC" required value="{{ first_prod_enq2_CC }}">
-        </div>
-        <div class="col-md-6 form-group">
-          <label for="first_prod_enq2_ConsumerLoan">First Prod Enq2 Consumer Loan:</label>
-          <input type="text" class="form-control" id="first_prod_enq2_ConsumerLoan" name="first_prod_enq2_ConsumerLoan" required value="{{ first_prod_enq2_ConsumerLoan }}">
-        </div>
-        <div class="col-md-6 form-group">
-          <label for="first_prod_enq2_HL">First Prod Enq2 HL:</label>
-          <input type="text" class="form-control" id="first_prod_enq2_HL" name="first_prod_enq2_HL" required value="{{ first_prod_enq2_HL }}">
-        </div>
-        <div class="col-md-6 form-group">
-          <label for="first_prod_enq2_PL">First Prod Enq2 PL:</label>
-          <input type="text" class="form-control" id="first_prod_enq2_PL" name="first_prod_enq2_PL" required value="{{ first_prod_enq2_PL }}">
-        </div>
-        <div class="col-md-6 form-group">
-          <label for="first_prod_enq2_others">First Prod Enq2 Others:</label>
-          <input type="text" class="form-control" id="first_prod_enq2_others" name="first_prod_enq2_others" required value="{{ first_prod_enq2_others }}">
+          <label for="PL_Flag">Flag for Personal Loan:</label>
+          <input type="text" class="form-control" id="PL_Flag" name="PL_Flag" required value="{{ PL_Flag }}">
         </div>
       </div>
       <button type="submit" class="btn btn-primary btn-block">Predict</button>
     </form>
   </div>
   <!-- Bootstrap JS and dependencies -->
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.6.2/js/bootstrap.min.js"></script>
 </body>
 </html>
