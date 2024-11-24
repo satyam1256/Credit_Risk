@@ -4,7 +4,7 @@ import pickle
 app = Flask(__name__)
 
 # Load the model
-model = pickle.load(open('model.pkl', 'rb'))
+model = pickle.load(open('bestmodel.pkl', 'rb'))
 
 # Home page
 @app.route('/')
